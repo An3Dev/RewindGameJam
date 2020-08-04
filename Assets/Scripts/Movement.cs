@@ -127,19 +127,13 @@ public class Movement : MonoBehaviour
     {
         rb.velocity = new Vector2(xInput * speed * Time.fixedDeltaTime, rb.velocity.y);
 
-
-        //if (!grounded && !jump && !highJump && rb.velocity.y )
-        //{
-        //    rb.velocity = new Vector2(rb.velocity.x, 0);
-        //}
-
-        //if (rb.velocity.y < 0)
-        //{
-        //    rb.velocity += Vector2.up * Physics2D.gravity * (fallMultiplier - 1) * Time.fixedDeltaTime;
-        //}
-        //else if (rb.velocity.y > 0 && !highJump)
-        //{
-        //    rb.velocity += Vector2.up * Physics2D.gravity * (lowJumpMultiplier - 1) * Time.fixedDeltaTime;
-        //}
+        if (rb.velocity.y < 0)
+        {
+            rb.velocity += Vector2.up * Physics2D.gravity * (fallMultiplier - 1) * Time.fixedDeltaTime;
+        }
+        else if (rb.velocity.y > 0 && !highJump)
+        {
+            rb.velocity += Vector2.up * Physics2D.gravity * (lowJumpMultiplier - 1) * Time.fixedDeltaTime;
+        }
     }
 }

@@ -65,7 +65,7 @@ public class TimeObject : MonoBehaviour
             }
             else
             {
-                rb.isKinematic = true;
+                //rb.isKinematic = true;
             }
         }
         else if (!isAClone)
@@ -108,7 +108,7 @@ public class TimeObject : MonoBehaviour
         {
             foreach (TimeObject timeObject in clonedObjects)
             {
-                timeObject.StopRewind(); 
+                timeObject.StopRewind();
             }
         } else
         {
