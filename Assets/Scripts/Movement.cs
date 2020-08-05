@@ -14,7 +14,8 @@ public class Movement : MonoBehaviour
 
     public LayerMask whatIsGround;
 
-    BoxCollider2D boxCollider;
+    public Collider2D collider;
+    public BoxCollider2D boxCollider;
 
     public float extraHeight;
     public Transform spawnPoint;
@@ -34,12 +35,14 @@ public class Movement : MonoBehaviour
 
     float xInput;
     bool jump = false, highJump = false;
+
+    public bool canControlJump = true;
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        boxCollider = GetComponent<BoxCollider2D>();
         cameraData = mainCamera.GetUniversalAdditionalCameraData();
+        stackedCamera = mainCamera.transform.GetChild(0).GetComponent<Camera>();
     }
 
     public void PlayRewindEffect()
@@ -91,7 +94,8 @@ public class Movement : MonoBehaviour
             rb.isKinematic = true;
             rb.simulated = false;
             return;
-        } else
+        }
+        else
         {
             rb.isKinematic = false;
             rb.simulated = true;
@@ -116,6 +120,11 @@ public class Movement : MonoBehaviour
 
         highJump = Input.GetKey(KeyCode.Space);
 
+        if (grounded)
+        {
+            canControlJump = true;
+        }
+
         if (jump && grounded)
         {
             rb.velocity += Vector2.up * jumpForce;
@@ -125,15 +134,33 @@ public class Movement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        rb.velocity = new Vector2(xInput * speed * Time.fixedDeltaTime, rb.velocity.y);
+        if (canControlJump)
+        {
+            rb.velocity = new Vector2(xInput * speed * Time.fixedDeltaTime, rb.velocity.y);
+        }
 
-        if (rb.velocity.y < 0)
+        if (rb.velocity.y < 0 && !isRewinding)
         {
             rb.velocity += Vector2.up * Physics2D.gravity * (fallMultiplier - 1) * Time.fixedDeltaTime;
         }
-        else if (rb.velocity.y > 0 && !highJump)
+        else if (rb.velocity.y > 0 && !highJump || isRewinding && rb.velocity.y > 0)
         {
             rb.velocity += Vector2.up * Physics2D.gravity * (lowJumpMultiplier - 1) * Time.fixedDeltaTime;
         }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (!grounded)
+        {
+            canControlJump = false;
+            Debug.Log("Test");
+        }
+    }
+
+
+    private void OnCollisionExit(Collision collision)
+    {
+        canControlJump = true;
     }
 }

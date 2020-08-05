@@ -13,11 +13,11 @@ public class TimeObject : MonoBehaviour
     public List<PointInTime> pointsInTime;
 
     Rigidbody2D rb;
-
+    public Collider2D collider;
     public float stopDelay = 0.2f;
     Transform player;
     public bool clonesOnRewind = false;
-    bool isAClone = false;
+    public bool isAClone = false;
 
     Movement movement;
 
@@ -29,6 +29,12 @@ public class TimeObject : MonoBehaviour
     int indexFromTop;
 
     bool playingActions = false;
+
+    int cloneIndex = 0;
+
+    int rewindLimit = 5;
+    int currentRewinds = 0;
+
     // Use this for initialization
     void Start()
     {
@@ -44,8 +50,8 @@ public class TimeObject : MonoBehaviour
         }
         rb = GetComponent<Rigidbody2D>();
         player = MyGameManager.player;
-        movement = player.GetComponent<Movement>();      
-
+        movement = player.GetComponent<Movement>();
+        collider = movement.collider;
     }
 
 
@@ -90,13 +96,15 @@ public class TimeObject : MonoBehaviour
             if (indexFromTop > -1)
             {
                 PointInTime pointInTime = clonedPointsInTime[indexFromTop];
-                rb.MovePosition(pointInTime.position);
+                transform.position = pointInTime.position;
+                //rb.MovePosition(pointInTime.position);
                 transform.rotation = pointInTime.rotation;
                 indexFromTop--;
             }
             else
             {
-                rb.isKinematic = true;
+                //rb.isKinematic = true;
+                //rb.useFullKinematicContacts = true;
                 playingActions = false;
             }
 
@@ -110,7 +118,10 @@ public class TimeObject : MonoBehaviour
             {
                 timeObject.StopRewind();
             }
-        } else
+            Invoke("StopRewindNow", stopDelay);
+
+        }
+        else
         {
             Invoke("StopRewindNow", stopDelay);
             PlayPastActions();
@@ -122,19 +133,25 @@ public class TimeObject : MonoBehaviour
     {
         rb.simulated = true;
         GameObject clone = Instantiate(gameObject, transform.position, transform.rotation);
+        cloneIndex++;
+
+        clone.name = cloneIndex.ToString();
+
         TimeObject timeObject = clone.GetComponent<TimeObject>();
         clonedObjects.Add(timeObject);
 
         timeObject.isAClone = true;
-        timeObject.isRewinding = true;
+        //timeObject.isRewinding = true;
         clone.GetComponent<Movement>().enabled = false;
-        //timeObject.indexInTime = indexInTime;
-        
+        clone.GetComponent<BoxCollider2D>().isTrigger = false;
+        //clone.GetComponent
         timeObject.pointsInTime = new List<PointInTime>(clonedPointsInTime);
         timeObject.clonedPointsInTime = new List<PointInTime>(clonedPointsInTime);
 
         clonedPointsInTime.Clear();
         pointsInTime.Clear();
+        indexInTime = 0;
+
         clone.tag = "Untagged";
         clone.layer = LayerMask.NameToLayer("Default");
     }
@@ -144,17 +161,14 @@ public class TimeObject : MonoBehaviour
         if (isAClone)
         {
             // if there is data about past
-            if (pointsInTime.Count > 0)
+            if (pointsInTime.Count > 0 && indexInTime < pointsInTime.Count)
             {
-                PointInTime pointInTime = pointsInTime[0];
-                rb.MovePosition(pointInTime.position);
+                PointInTime pointInTime = pointsInTime[indexInTime];
+                //rb.MovePosition(pointInTime.position);
+                transform.position = pointInTime.position;
                 transform.rotation = pointInTime.rotation;
-                pointsInTime.RemoveAt(0);
+                //pointsInTime.RemoveAt(0);
                 indexInTime++;
-            }
-            else
-            {
-                StopRewindNow();
             }
         }      
     }
@@ -173,16 +187,40 @@ public class TimeObject : MonoBehaviour
 
     public void StartRewind()
     {
-        isRewinding = true;
-        rb.isKinematic = true;
-        CreateClone();
+        if (currentRewinds >= rewindLimit)
+        {
+            return;
+        }
+
+        if (!isAClone)
+        {
+            currentRewinds++;
+            isRewinding = true;
+            rb.isKinematic = true;
+            rb.useFullKinematicContacts = true;
+            transform.position += Vector3.forward * 0.1f;
+            CreateClone();
+
+            foreach (TimeObject timeObject in clonedObjects)
+            {
+                timeObject.StartRewind();
+            }
+        } else
+        {
+            isRewinding = true;
+            //collider.enabled = false;
+        }
     }
 
     public void StopRewindNow()
     {
+        collider.enabled = true;
+        transform.position -= Vector3.forward * 0.1f;
+
         isRewinding = false;
         rb.isKinematic = false;
         indexFromTop = indexInTime - 1;
+        indexInTime = 0;
         if (transform.GetComponent<IMoveable>() != null)
         {
             transform.GetComponent<IMoveable>().StartMoving();
