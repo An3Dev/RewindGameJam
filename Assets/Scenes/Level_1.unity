@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 0
+  m_UseShadowmask: 1
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -1183,6 +1183,12 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1516643284}
   m_CullTransparentMesh: 0
+--- !u!58 &1532606932 stripped
+CircleCollider2D:
+  m_CorrespondingSourceObject: {fileID: 2651911593720663136, guid: 4e14ba036fdb1334a9a888e772bc5e97,
+    type: 3}
+  m_PrefabInstance: {fileID: 2651911593302497144}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1769422184
 GameObject:
   m_ObjectHideFlags: 0
@@ -1451,6 +1457,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 2651911593720663146, guid: 4e14ba036fdb1334a9a888e772bc5e97,
+        type: 3}
+      propertyPath: collider
+      value: 
+      objectReference: {fileID: 1532606932}
     - target: {fileID: 2651911593720663147, guid: 4e14ba036fdb1334a9a888e772bc5e97,
         type: 3}
       propertyPath: spawnPoint

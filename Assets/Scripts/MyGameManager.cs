@@ -11,11 +11,25 @@ public class MyGameManager : MonoBehaviour
     private void Awake()
     {
         player = GameObject.FindGameObjectWithTag("Player").transform;
-        currentLevel = SceneManager.GetActiveScene().buildIndex;
     }
 
+    private void Start()
+    {
+        currentLevel = SceneManager.GetActiveScene().buildIndex + 1;
+    }
     public static void GoToNextLevel()
     {
-        SceneManager.LoadScene(SceneManager.GetSceneByBuildIndex(currentLevel+1).name);
+        SceneManager.LoadScene("Level_" + currentLevel++);
+
+        //if (SceneManager.sceneCountInBuildSettings >= currentLevel+1)
+        //{
+        //    SceneManager.LoadScene("Level_" + currentLevel++);
+        //} else
+        //{
+        //    // load menu because player beat the games
+        //    SceneManager.LoadScene(SceneManager.GetSceneByBuildIndex(currentLevel).name);
+
+        //}
+
     }
 }

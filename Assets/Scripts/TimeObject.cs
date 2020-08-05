@@ -8,7 +8,7 @@ public class TimeObject : MonoBehaviour
 
     bool isRewinding = false;
 
-    public float recordTime = 5f;
+    float recordTime = 60f;
 
     public List<PointInTime> pointsInTime;
 
@@ -32,9 +32,10 @@ public class TimeObject : MonoBehaviour
 
     int cloneIndex = 0;
 
-    int rewindLimit = 5;
+    int rewindLimit = 100;
     int currentRewinds = 0;
 
+    public PhysicsMaterial2D frictionMat;
     // Use this for initialization
     void Start()
     {
@@ -60,6 +61,9 @@ public class TimeObject : MonoBehaviour
         if (playingActions)
         {
             PlayPastActions();
+        } else if (!isRewinding && isAClone)
+        {
+            Record();
         }
 
         if (isRewinding)
@@ -76,21 +80,21 @@ public class TimeObject : MonoBehaviour
         }
         else if (!isAClone)
         {
-            // can't record if you're a clone.
+            
             Record();
             rb.isKinematic = false;
             rb.simulated = true;
         }
         else if (isAClone)
         {
-            playingActions = true;
+            //playingActions = true;
+            //Record();
         }
     }
 
 
     void PlayPastActions()
     {
-
         if (clonedPointsInTime.Count > 0)
         {
             if (indexFromTop > -1)
@@ -98,7 +102,7 @@ public class TimeObject : MonoBehaviour
                 PointInTime pointInTime = clonedPointsInTime[indexFromTop];
                 transform.position = pointInTime.position;
                 //rb.MovePosition(pointInTime.position);
-                transform.rotation = pointInTime.rotation;
+                //transform.right = new Vector2(pointInTime.direction, 0);
                 indexFromTop--;
             }
             else
@@ -119,14 +123,15 @@ public class TimeObject : MonoBehaviour
                 timeObject.StopRewind();
             }
             Invoke("StopRewindNow", stopDelay);
+            StopRewindNow();
 
         }
         else
         {
-            Invoke("StopRewindNow", stopDelay);
+            //Invoke("StopRewindNow", stopDelay);
+            StopRewindNow();
             PlayPastActions();
         }
-
     }
 
     void CreateClone()
@@ -144,6 +149,9 @@ public class TimeObject : MonoBehaviour
         //timeObject.isRewinding = true;
         clone.GetComponent<Movement>().enabled = false;
         clone.GetComponent<BoxCollider2D>().isTrigger = false;
+        clone.GetComponent<Collider2D>().sharedMaterial = frictionMat;
+        clone.GetComponent<Rigidbody2D>().sharedMaterial = frictionMat;
+        clone.GetComponent<Rigidbody2D>().mass *= 5;
         //clone.GetComponent
         timeObject.pointsInTime = new List<PointInTime>(clonedPointsInTime);
         timeObject.clonedPointsInTime = new List<PointInTime>(clonedPointsInTime);
@@ -160,13 +168,15 @@ public class TimeObject : MonoBehaviour
     {
         if (isAClone)
         {
+            pointsInTime = clonedPointsInTime.ToList<PointInTime>();
+
             // if there is data about past
             if (pointsInTime.Count > 0 && indexInTime < pointsInTime.Count)
             {
                 PointInTime pointInTime = pointsInTime[indexInTime];
                 //rb.MovePosition(pointInTime.position);
                 transform.position = pointInTime.position;
-                transform.rotation = pointInTime.rotation;
+                //transform.rotation = pointInTime.rotation;
                 //pointsInTime.RemoveAt(0);
                 indexInTime++;
             }
@@ -175,16 +185,28 @@ public class TimeObject : MonoBehaviour
 
     public void Record()
     {
-        if (pointsInTime.Count > Mathf.Round(recordTime / Time.fixedDeltaTime))
+
+        if (!isAClone)
         {
-            pointsInTime.RemoveAt(pointsInTime.Count - 1);
-            clonedPointsInTime.RemoveAt(clonedPointsInTime.Count - 1);
+            if (pointsInTime.Count > Mathf.Round(recordTime / Time.fixedDeltaTime))
+            {
+                pointsInTime.RemoveAt(pointsInTime.Count - 1);
+                clonedPointsInTime.RemoveAt(clonedPointsInTime.Count - 1);
+            }
+            clonedPointsInTime.Insert(0, new PointInTime(transform.position, (int)transform.right.x));
+            pointsInTime.Insert(0, new PointInTime(transform.position, (int)transform.right.x));
+        } else
+        {
+            if (clonedPointsInTime.Count > Mathf.Round(recordTime / Time.fixedDeltaTime))
+            {
+                pointsInTime.RemoveAt(pointsInTime.Count - 1);
+            }
+
+            pointsInTime.Insert(0, new PointInTime(transform.position, (int)transform.right.x));
+            //Debug.Log(transform.name + " Record: " + pointsInTime.Count);
         }
-
-        clonedPointsInTime.Insert(0, new PointInTime(transform.position, transform.rotation));
-        pointsInTime.Insert(0, new PointInTime(transform.position, transform.rotation));
     }
-
+    
     public void StartRewind()
     {
         if (currentRewinds >= rewindLimit)
@@ -208,6 +230,8 @@ public class TimeObject : MonoBehaviour
         } else
         {
             isRewinding = true;
+
+            clonedPointsInTime = pointsInTime.ToList<PointInTime>();
             //collider.enabled = false;
         }
     }
@@ -220,7 +244,12 @@ public class TimeObject : MonoBehaviour
         isRewinding = false;
         rb.isKinematic = false;
         indexFromTop = indexInTime - 1;
+        //clonedPointsInTime.RemoveRange(indexInTime, pointsInTime.Count - 1);
+
+
         indexInTime = 0;
+        playingActions = true;
+
         if (transform.GetComponent<IMoveable>() != null)
         {
             transform.GetComponent<IMoveable>().StartMoving();

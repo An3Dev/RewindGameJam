@@ -37,6 +37,9 @@ public class Movement : MonoBehaviour
     bool jump = false, highJump = false;
 
     public bool canControlJump = true;
+
+    float rewindTimer = 0;
+    float minRewindTime = 1;
     // Start is called before the first frame update
     void Start()
     {
@@ -65,21 +68,40 @@ public class Movement : MonoBehaviour
         xInput = Input.GetAxis("Horizontal");
         float yInput = Input.GetAxis("Vertical");
 
+        if (isRewinding)
+        {
+            rewindTimer += Time.deltaTime;
+        }
+
+
         if (Input.GetMouseButtonDown(1))
         {
             PlayRewindEffect();
+            isRewinding = true;
+
             foreach (TimeObject timeObject in timeObjects)
             {
                 timeObject.StartRewind();
-                isRewinding = true;
             }
-        } else if (Input.GetMouseButtonUp(1))
+        } else if (Input.GetMouseButtonUp(1) && rewindTimer > minRewindTime)
         {
+            rewindTimer = 0;
             foreach (TimeObject timeObject in timeObjects)
             {
                 timeObject.StopRewind();
-                isRewinding = false;
             }
+            isRewinding = false;
+
+            StopRewindEffect();
+        } else if (!Input.GetMouseButton(1) && rewindTimer > minRewindTime)
+        {
+            rewindTimer = 0;
+            foreach (TimeObject timeObject in timeObjects)
+            {
+                timeObject.StopRewind();
+            }
+            isRewinding = false;
+
             StopRewindEffect();
         }
 
@@ -153,14 +175,14 @@ public class Movement : MonoBehaviour
     {
         if (!grounded)
         {
-            canControlJump = false;
-            Debug.Log("Test");
         }
+        canControlJump = false;
+
     }
 
 
-    private void OnCollisionExit(Collision collision)
-    {
-        canControlJump = true;
-    }
+    //private void OnCollisionExit(Collision collision)
+    //{
+    //    canControlJump = true;
+    //}
 }
