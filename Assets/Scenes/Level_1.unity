@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 1
+  m_UseShadowmask: 0
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -795,9 +795,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Hello Mr. Cube, I am the Master of Time. I look forward to seeing you fail
-    your tests again. You will temporarily have the power to rewind time(By holding
-    right click). Your goal is to reach the teleporting crystal.
+  m_text: Hello Mr. Square, I am the Master of Time. I look forward to seeing you
+    fail your tests again. You will temporarily have the power to rewind time(By
+    holding right click). Your goal is to reach the teleporting crystal.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -866,7 +866,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 856230124}
-    characterCount: 215
+    characterCount: 217
     spriteCount: 0
     spaceCount: 38
     wordCount: 40
@@ -1185,12 +1185,6 @@ Transform:
   m_Father: {fileID: 530743296}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!58 &1532606932 stripped
-CircleCollider2D:
-  m_CorrespondingSourceObject: {fileID: 2651911593720663136, guid: 4e14ba036fdb1334a9a888e772bc5e97,
-    type: 3}
-  m_PrefabInstance: {fileID: 2651911593302497144}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1769422184
 GameObject:
   m_ObjectHideFlags: 0
@@ -1463,7 +1457,7 @@ PrefabInstance:
         type: 3}
       propertyPath: collider
       value: 
-      objectReference: {fileID: 1532606932}
+      objectReference: {fileID: 0}
     - target: {fileID: 2651911593720663147, guid: 4e14ba036fdb1334a9a888e772bc5e97,
         type: 3}
       propertyPath: spawnPoint
