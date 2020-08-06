@@ -124,7 +124,6 @@ public class TimeObject : MonoBehaviour
             }
             Invoke("StopRewindNow", stopDelay);
             StopRewindNow();
-
         }
         else
         {
@@ -148,10 +147,10 @@ public class TimeObject : MonoBehaviour
         timeObject.isAClone = true;
         //timeObject.isRewinding = true;
         clone.GetComponent<Movement>().enabled = false;
-        clone.GetComponent<BoxCollider2D>().isTrigger = false;
+        //clone.GetComponent<BoxCollider2D>().isTrigger = false;
         clone.GetComponent<Collider2D>().sharedMaterial = frictionMat;
         clone.GetComponent<Rigidbody2D>().sharedMaterial = frictionMat;
-        clone.GetComponent<Rigidbody2D>().mass *= 5;
+        clone.GetComponent<Rigidbody2D>().mass *= 15;
         //clone.GetComponent
         timeObject.pointsInTime = new List<PointInTime>(clonedPointsInTime);
         timeObject.clonedPointsInTime = new List<PointInTime>(clonedPointsInTime);
@@ -193,8 +192,8 @@ public class TimeObject : MonoBehaviour
                 pointsInTime.RemoveAt(pointsInTime.Count - 1);
                 clonedPointsInTime.RemoveAt(clonedPointsInTime.Count - 1);
             }
-            clonedPointsInTime.Insert(0, new PointInTime(transform.position, (int)transform.right.x));
-            pointsInTime.Insert(0, new PointInTime(transform.position, (int)transform.right.x));
+            clonedPointsInTime.Insert(0, new PointInTime(transform.position, transform.rotation));
+            pointsInTime.Insert(0, new PointInTime(transform.position, transform.rotation));
         } else
         {
             if (clonedPointsInTime.Count > Mathf.Round(recordTime / Time.fixedDeltaTime))
@@ -202,7 +201,7 @@ public class TimeObject : MonoBehaviour
                 pointsInTime.RemoveAt(pointsInTime.Count - 1);
             }
 
-            pointsInTime.Insert(0, new PointInTime(transform.position, (int)transform.right.x));
+            pointsInTime.Insert(0, new PointInTime(transform.position, transform.rotation));
             //Debug.Log(transform.name + " Record: " + pointsInTime.Count);
         }
     }

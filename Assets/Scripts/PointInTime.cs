@@ -5,11 +5,11 @@ using UnityEngine;
 public class PointInTime
 {
     public Vector2 position;
-    public int direction;
+    public Quaternion rotation;
 
-    public PointInTime (Vector2 _position, int _direction)
+    public PointInTime (Vector2 _position, Quaternion _rotation)
     {
         position = _position;
-        direction = _direction;
+        rotation = _rotation;
     }
 }

@@ -39,7 +39,7 @@ public class Movement : MonoBehaviour
     public bool canControlJump = true;
 
     float rewindTimer = 0;
-    float minRewindTime = 1;
+    float minRewindTime = 0.5f;
     // Start is called before the first frame update
     void Start()
     {
@@ -62,6 +62,11 @@ public class Movement : MonoBehaviour
         stackedCamera.enabled = false;
     }
 
+    void RestartLevel()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -73,8 +78,7 @@ public class Movement : MonoBehaviour
             rewindTimer += Time.deltaTime;
         }
 
-
-        if (Input.GetMouseButtonDown(1))
+        if (Input.GetMouseButtonDown(1) && !isRewinding)
         {
             PlayRewindEffect();
             isRewinding = true;
@@ -105,9 +109,9 @@ public class Movement : MonoBehaviour
             StopRewindEffect();
         }
 
-        if (Input.GetKey(KeyCode.Q))
+        if (Input.GetKey(KeyCode.R))
         {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            RestartLevel();
         }
 
         if (isRewinding)
@@ -176,13 +180,13 @@ public class Movement : MonoBehaviour
         if (!grounded)
         {
         }
-        canControlJump = false;
+        //canControlJump = false;
 
     }
 
 
-    //private void OnCollisionExit(Collision collision)
-    //{
-    //    canControlJump = true;
-    //}
+    private void OnCollisionExit(Collision collision)
+    {
+        canControlJump = true;
+    }
 }

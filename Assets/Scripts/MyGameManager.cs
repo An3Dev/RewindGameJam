@@ -16,20 +16,23 @@ public class MyGameManager : MonoBehaviour
     private void Start()
     {
         currentLevel = SceneManager.GetActiveScene().buildIndex + 1;
+        Debug.Log(currentLevel);
     }
+
     public static void GoToNextLevel()
     {
-        SceneManager.LoadScene("Level_" + currentLevel++);
+        //SceneManager.LoadScene("Level_" + (currentLevel + 1));
 
-        //if (SceneManager.sceneCountInBuildSettings >= currentLevel+1)
-        //{
-        //    SceneManager.LoadScene("Level_" + currentLevel++);
-        //} else
-        //{
-        //    // load menu because player beat the games
-        //    SceneManager.LoadScene(SceneManager.GetSceneByBuildIndex(currentLevel).name);
+        if (SceneManager.sceneCountInBuildSettings >= (currentLevel + 1))
+        {
+            SceneManager.LoadScene("Level_" + (currentLevel + 1));
+        }
+        else
+        {
+            // load menu because player beat the games
+            SceneManager.LoadScene(0);
 
-        //}
+        }
 
     }
 }
