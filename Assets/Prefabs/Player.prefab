@@ -140,6 +140,9 @@ MonoBehaviour:
     m_Bits: 2048
   jumpForce: 8
   canControlJump: 1
+  rewindImagePrefab: {fileID: 6113428282690897322, guid: 18d5b6721533b0249b588d67dcb46233,
+    type: 3}
+  rewindImageParent: {fileID: 0}
 --- !u!114 &2651911593720663146
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -156,7 +159,8 @@ MonoBehaviour:
   stopDelay: 0
   clonesOnRewind: 1
   isAClone: 0
-  frictionMat: {fileID: 0}
+  frictionMat: {fileID: 6200000, guid: 86751c4d3a46e244aa92d1231e11083a, type: 2}
+  isPlayer: 1
 --- !u!61 &2651911593720663149
 BoxCollider2D:
   m_ObjectHideFlags: 0

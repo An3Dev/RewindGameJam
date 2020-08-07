@@ -36,6 +36,9 @@ public class TimeObject : MonoBehaviour
     int currentRewinds = 0;
 
     public PhysicsMaterial2D frictionMat;
+
+    public bool isPlayer = true;
+
     // Use this for initialization
     void Start()
     {
@@ -78,7 +81,7 @@ public class TimeObject : MonoBehaviour
                 //rb.isKinematic = true;
             }
         }
-        else if (!isAClone)
+        else if (!isAClone && isPlayer)
         {
             
             Record();
@@ -116,7 +119,7 @@ public class TimeObject : MonoBehaviour
     }
     public void StopRewind()
     {
-        if (!isAClone)
+        if (!isAClone && isPlayer)
         {
             foreach (TimeObject timeObject in clonedObjects)
             {
@@ -165,8 +168,9 @@ public class TimeObject : MonoBehaviour
 
     public void Rewind()
     {
-        if (isAClone)
+        if (isAClone || !isPlayer)
         {
+            Debug.Log(transform.name);
             pointsInTime = clonedPointsInTime.ToList<PointInTime>();
 
             // if there is data about past
@@ -179,7 +183,7 @@ public class TimeObject : MonoBehaviour
                 //pointsInTime.RemoveAt(0);
                 indexInTime++;
             }
-        }      
+        }
     }
 
     public void Record()
@@ -208,12 +212,7 @@ public class TimeObject : MonoBehaviour
     
     public void StartRewind()
     {
-        if (currentRewinds >= rewindLimit)
-        {
-            return;
-        }
-
-        if (!isAClone)
+        if (!isAClone && isPlayer)
         {
             currentRewinds++;
             isRewinding = true;

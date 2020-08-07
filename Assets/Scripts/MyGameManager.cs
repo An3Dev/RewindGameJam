@@ -8,6 +8,8 @@ public class MyGameManager : MonoBehaviour
     public static Transform player;
 
     public static int currentLevel = 0;
+
+    public int rewindLimit;
     private void Awake()
     {
         player = GameObject.FindGameObjectWithTag("Player").transform;
@@ -16,7 +18,6 @@ public class MyGameManager : MonoBehaviour
     private void Start()
     {
         currentLevel = SceneManager.GetActiveScene().buildIndex + 1;
-        Debug.Log(currentLevel);
     }
 
     public static void GoToNextLevel()

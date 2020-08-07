@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class Movement : MonoBehaviour
 {
@@ -40,12 +41,33 @@ public class Movement : MonoBehaviour
 
     float rewindTimer = 0;
     float minRewindTime = 0.5f;
+
+    MyGameManager gameManager;
+
+    int rewindLimit;
+
+    int currentRewinds;
+
+    public Transform rewindImagePrefab;
+    List<Image> rewindIconList;
+    public Transform rewindImageParent;
+
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         cameraData = mainCamera.GetUniversalAdditionalCameraData();
         stackedCamera = mainCamera.transform.GetChild(0).GetComponent<Camera>();
+        gameManager = GameObject.Find("GameManager").GetComponent<MyGameManager>();
+        rewindLimit = gameManager.rewindLimit;
+
+        rewindIconList = new List<Image>();
+        // update rewind ui to show how many rewinds are left
+        for(int i = 0; i < rewindLimit; i++)
+        {
+            Image image = Instantiate(rewindImagePrefab, rewindImageParent).GetComponent<Image>();
+            rewindIconList.Add(image);
+        }
     }
 
     public void PlayRewindEffect()
@@ -78,10 +100,19 @@ public class Movement : MonoBehaviour
             rewindTimer += Time.deltaTime;
         }
 
-        if (Input.GetMouseButtonDown(1) && !isRewinding)
+        // if right click is clicked and can rewind
+        if (Input.GetMouseButtonDown(1) && !isRewinding && currentRewinds < rewindLimit)
         {
             PlayRewindEffect();
             isRewinding = true;
+
+            currentRewinds++;
+
+            // Change rewind UI
+            Image image = rewindIconList[rewindIconList.Count - currentRewinds];
+            Color newColor = image.color;
+            newColor.a = 0.25f;
+            image.color = newColor;
 
             foreach (TimeObject timeObject in timeObjects)
             {
@@ -184,6 +215,13 @@ public class Movement : MonoBehaviour
 
     }
 
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Killer"))
+        {
+            RestartLevel();
+        }
+    }
 
     private void OnCollisionExit(Collision collision)
     {
