@@ -17,7 +17,17 @@ public class MyGameManager : MonoBehaviour
 
     private void Start()
     {
-        currentLevel = SceneManager.GetActiveScene().buildIndex + 1;
+        currentLevel = SceneManager.GetActiveScene().buildIndex;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            SceneManager.LoadScene(0);
+        }
     }
 
     public static void GoToNextLevel()

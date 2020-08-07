@@ -108,11 +108,14 @@ public class Movement : MonoBehaviour
 
             currentRewinds++;
 
-            // Change rewind UI
-            Image image = rewindIconList[rewindIconList.Count - currentRewinds];
-            Color newColor = image.color;
-            newColor.a = 0.25f;
-            image.color = newColor;
+            if (rewindImageParent)
+            {
+                // Change rewind UI
+                Image image = rewindIconList[rewindIconList.Count - currentRewinds];
+                Color newColor = image.color;
+                newColor.a = 0.25f;
+                image.color = newColor;
+            }
 
             foreach (TimeObject timeObject in timeObjects)
             {
