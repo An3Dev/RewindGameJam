@@ -34,7 +34,7 @@ public class MyGameManager : MonoBehaviour
     {
         //SceneManager.LoadScene("Level_" + (currentLevel + 1));
 
-        if (SceneManager.sceneCountInBuildSettings >= (currentLevel + 1))
+        if (currentLevel < SceneManager.sceneCountInBuildSettings - 1)
         {
             SceneManager.LoadScene("Level_" + (currentLevel + 1));
         }
@@ -42,7 +42,6 @@ public class MyGameManager : MonoBehaviour
         {
             // load menu because player beat the games
             SceneManager.LoadScene(0);
-
         }
 
     }
